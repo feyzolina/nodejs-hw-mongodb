@@ -1,37 +1,72 @@
 [
   {
-    "name": "Allen Raymond",
-    "phoneNumber": "(692) 802-6949",
-    "email": "nulla.ante@vestibul.co.uk",
+    "name": "Yulia Shevchenko",
+    "phoneNumber": "+380000000001",
+    "email": "oleh1@example.com",
     "isFavourite": false,
     "contactType": "personal"
   },
   {
-    "name": "Chaim Lewis",
-    "phoneNumber": "(294) 840-6685",
-    "email": "dui.in@egetlacus.ca",
+    "name": "Dmytro Boyko",
+    "phoneNumber": "+380000000002",
+    "email": null,
     "isFavourite": false,
-    "contactType": "work"
+    "contactType": "personal"
   },
   {
-    "name": "Kennedy Lane",
-    "phoneNumber": "(542) 451-7038",
-    "email": "mattis.Cras@nonenimMauris.net",
-    "isFavourite": true,
+    "name": "Andriy Pavlenko",
+    "phoneNumber": "+380000000003",
+    "email": "dmytro3@example.com",
+    "isFavourite": false,
     "contactType": "home"
   },
   {
-    "name": "Wylie Pope",
-    "phoneNumber": "(692) 802-6949",
-    "email": "est@utquamvel.net",
+    "name": "Yulia Shevchenko",
+    "phoneNumber": "+380000000004",
+    "email": null,
     "isFavourite": false,
     "contactType": "personal"
   },
   {
-    "name": "Cyrus Jackson",
-    "phoneNumber": "(501) 472-5218",
-    "email": "nibh@semsempererat.com",
-    "isFavourite": true,
-    "contactType": "work"
+    "name": "Kateryna Povalenko",
+    "phoneNumber": "+380000000005",
+    "email": "ivan5@example.com",
+    "isFavourite": false,
+    "contactType": "personal"
+  },
+  {
+    "name": "Anna Kovalenko",
+    "phoneNumber": "+380000000006",
+    "email": null,
+    "isFavourite": false,
+    "contactType": "home"
+  },
+  {
+    "name": "Oleh Tkachuk",
+    "phoneNumber": "+380000000007",
+    "email": "andriy7@example.com",
+    "isFavourite": false,
+    "contactType": "personal"
+  },
+  {
+    "name": "Maria Petrenko",
+    "phoneNumber": "+380000000008",
+    "email": null,
+    "isFavourite": false,
+    "contactType": "personal"
+  },
+  {
+    "name": "Ivan Ivanenko",
+    "phoneNumber": "+380000000009",
+    "email": "vasyl9@example.com",
+    "isFavourite": false,
+    "contactType": "home"
+  },
+  {
+    "name": "Kateryna Kovalchuk",
+    "phoneNumber": "+3800000000010",
+    "email": null,
+    "isFavourite": false,
+    "contactType": "personal"
   }
 ]
