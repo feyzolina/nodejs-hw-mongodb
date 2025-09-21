@@ -5,6 +5,7 @@ import pino from 'pino';
 import {
   getContactsController,
   getContactByIdController,
+  seedContactsController,
 } from './controllers/contacts.js';
 
 const logger = pino();
@@ -27,6 +28,9 @@ export const setupServer = () => {
   // Routes
   app.get('/contacts', getContactsController);
   app.get('/contacts/:contactId', getContactByIdController);
+  
+  // Geçici seed endpoint - sadece ilk deploy için
+  app.post('/seed', seedContactsController);
 
   // 404 handler for non-existent routes
   app.use((req, res) => {
