@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Allen Raymond",
+    "phoneNumber": "(692) 802-6949",
+    "email": "nulla.ante@vestibul.co.uk",
+    "isFavourite": false,
+    "contactType": "personal"
+  },
+  {
+    "name": "Chaim Lewis",
+    "phoneNumber": "(294) 840-6685",
+    "email": "dui.in@egetlacus.ca",
+    "isFavourite": false,
+    "contactType": "work"
+  },
+  {
+    "name": "Kennedy Lane",
+    "phoneNumber": "(542) 451-7038",
+    "email": "mattis.Cras@nonenimMauris.net",
+    "isFavourite": true,
+    "contactType": "home"
+  },
+  {
+    "name": "Wylie Pope",
+    "phoneNumber": "(692) 802-6949",
+    "email": "est@utquamvel.net",
+    "isFavourite": false,
+    "contactType": "personal"
+  },
+  {
+    "name": "Cyrus Jackson",
+    "phoneNumber": "(501) 472-5218",
+    "email": "nibh@semsempererat.com",
+    "isFavourite": true,
+    "contactType": "work"
+  }
+]
