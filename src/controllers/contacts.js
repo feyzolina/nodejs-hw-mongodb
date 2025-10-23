@@ -9,7 +9,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const getContactsController = async (req, res) => {
-  const contacts = await getAllContacts();
+  const page = parseInt(req.query.page, 10) || 1;
+  const perPage = parseInt(req.query.perPage, 10) || 10;
+  const sortBy = req.query.sortBy || '_id';
+  const sortOrder = req.query.sortOrder || 'asc';
+
+  const filter = {};
+  if (req.query.type) {
+    filter.type = req.query.type;
+  }
+  if (req.query.isFavourite !== undefined) {
+    filter.isFavourite = req.query.isFavourite === 'true';
+  }
+
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
 
   res.status(200).json({
     status: 200,
