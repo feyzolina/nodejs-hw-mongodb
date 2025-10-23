@@ -1,12 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino';
-
-import {
-  getContactsController,
-  getContactByIdController,
-  seedContactsController,
-} from './controllers/contacts.js';
+import contactsRouter from './routers/contacts.js';
+import errorHandler from './middlewares/errorHandler.js';
+import notFoundHandler from './middlewares/notFoundHandler.js';
 
 const logger = pino();
 
@@ -26,18 +23,13 @@ export const setupServer = () => {
   });
 
   // Routes
-  app.get('/contacts', getContactsController);
-  app.get('/contacts/:contactId', getContactByIdController);
-  
-  // Geçici seed endpoint - sadece ilk deploy için
-  app.post('/seed', seedContactsController);
+  app.use('/', contactsRouter);
 
   // 404 handler for non-existent routes
-  app.use((req, res) => {
-    res.status(404).json({
-      message: 'Not found',
-    });
-  });
+  app.use(notFoundHandler);
+
+  // Error handler middleware (must be last)
+  app.use(errorHandler);
 
   const PORT = process.env.PORT || 3000;
 

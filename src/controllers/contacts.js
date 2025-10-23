@@ -1,5 +1,6 @@
-import { getAllContacts, getContactById } from '../services/contacts.js';
+import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from '../services/contacts.js';
 import { ContactsCollection } from '../db/models/Contact.js';
+import createHttpError from 'http-errors';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -8,44 +9,66 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const getContactsController = async (req, res) => {
-  try {
-    const contacts = await getAllContacts();
+  const contacts = await getAllContacts();
 
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Something went wrong',
-      error: error.message,
-    });
-  }
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: contacts,
+  });
 };
 
 export const getContactByIdController = async (req, res) => {
-  try {
-    const { contactId } = req.params;
-    const contact = await getContactById(contactId);
+  const { contactId } = req.params;
+  const contact = await getContactById(contactId);
 
-    if (!contact) {
-      return res.status(404).json({
-        message: 'Contact not found',
-      });
-    }
-
-    res.status(200).json({
-      status: 200,
-      message: `Successfully found contact with id ${contactId}!`,
-      data: contact,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Something went wrong',
-      error: error.message,
-    });
+  if (!contact) {
+    throw createHttpError(404, 'Contact not found');
   }
+
+  res.status(200).json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
+  });
+};
+
+export const createContactController = async (req, res) => {
+  const contact = await createContact(req.body);
+
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data: contact,
+  });
+};
+
+export const patchContactController = async (req, res) => {
+  const { contactId } = req.params;
+
+  const result = await updateContact(contactId, req.body);
+
+  if (!result) {
+    throw createHttpError(404, 'Contact not found');
+  }
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result.contact,
+  });
+};
+
+export const deleteContactController = async (req, res) => {
+  const { contactId } = req.params;
+
+  const contact = await deleteContact(contactId);
+
+  if (!contact) {
+    throw createHttpError(404, 'Contact not found');
+  }
+
+  res.status(204).send();
 };
 
 // Geçici seed endpoint - sadece ilk deploy için
