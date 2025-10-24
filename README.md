@@ -1,6 +1,6 @@
-# Node.js MongoDB Contact API
+# Node.js MongoDB Contact API with Authentication
 
-Bu proje, MongoDB ve Express.js kullanarak geliştirilmiş bir kişi yönetim API'sidir.
+Bu proje, MongoDB ve Express.js kullanarak geliştirilmiş, kimlik doğrulama sistemi olan bir kişi yönetim API'sidir.
 
 ## Özellikler
 

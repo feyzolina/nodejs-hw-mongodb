@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: nodejs-hw-mongodb
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    region: oregon # Render region
+    plan: free # Render plan type
+    branch: hw5-auth # Git branch to deploy
+    autoDeploy: true # Auto deploy on git push
