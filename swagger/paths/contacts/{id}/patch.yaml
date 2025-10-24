@@ -1,0 +1,141 @@
+tags:
+  - Contacts
+summary: Update contact by ID
+operationId: updateContactById
+description: |
+  Update an existing contact by its unique identifier.
+  Supports partial updates and image upload via multipart/form-data.
+  The contact must belong to the authenticated user.
+security:
+  - bearerAuth: []
+parameters:
+  - name: contactId
+    in: path
+    required: true
+    schema:
+      type: string
+      pattern: '^[0-9a-fA-F]{24}$'
+    description: MongoDB ObjectId of the contact
+    example: "507f1f77bcf86cd799439011"
+requestBody:
+  required: false
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            minLength: 3
+            maxLength: 20
+            description: Contact's full name
+            example: "John Doe Updated"
+          phoneNumber:
+            type: string
+            minLength: 3
+            maxLength: 20
+            description: Contact's phone number
+            example: "+1234567899"
+          email:
+            type: string
+            format: email
+            description: Contact's email address
+            example: "john.doe.updated@example.com"
+          isFavourite:
+            type: boolean
+            description: Whether the contact is marked as favourite
+            example: true
+          contactType:
+            type: string
+            enum: [work, home, personal]
+            description: Type of contact
+            example: "work"
+          photo:
+            type: string
+            format: binary
+            description: New photo file to replace existing one
+      examples:
+        partial_update:
+          summary: Update only name and favourite status
+          value:
+            name: "John Doe Updated"
+            isFavourite: true
+        update_with_photo:
+          summary: Update contact with new photo
+          value:
+            name: "John Doe"
+            contactType: "work"
+            photo: "(binary file data)"
+responses:
+  '200':
+    description: Contact updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully patched a contact!"
+            data:
+              $ref: '../../../components/schemas/Contact.yaml#/Contact'
+        examples:
+          successful_update:
+            summary: Contact updated successfully
+            value:
+              status: 200
+              message: "Successfully patched a contact!"
+              data:
+                _id: "507f1f77bcf86cd799439011"
+                name: "John Doe Updated"
+                phoneNumber: "+1234567890"
+                email: "john.doe@example.com"
+                isFavourite: true
+                contactType: "work"
+                photo: "https://res.cloudinary.com/example/image/upload/v1234567891/photos/updated-contact.jpg"
+                userId: "507f1f77bcf86cd799439012"
+                createdAt: "2023-10-24T10:30:00.000Z"
+                updatedAt: "2023-10-24T17:15:00.000Z"
+  '400':
+    description: Validation error
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/Error.yaml#/Error'
+        examples:
+          validation_error:
+            summary: Invalid field value
+            value:
+              status: 400
+              message: "\"name\" length must be at least 3 characters long"
+  '401':
+    description: Authentication required
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/Error.yaml#/Error'
+  '404':
+    description: Contact not found
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/Error.yaml#/Error'
+        examples:
+          not_found:
+            summary: Contact does not exist or doesn't belong to user
+            value:
+              status: 404
+              message: "Contact not found"
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/Error.yaml#/Error'

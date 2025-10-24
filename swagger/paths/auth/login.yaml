@@ -1,0 +1,71 @@
+tags:
+  - Authentication
+summary: User login
+operationId: loginUser
+description: |
+  Authenticate user with email and password.
+  Returns access token and sets httpOnly cookies for session management.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            format: email
+            description: User's email address
+            example: "john.doe@example.com"
+          password:
+            type: string
+            description: User's password
+            example: "password123"
+responses:
+  '200':
+    description: Login successful
+    headers:
+      Set-Cookie:
+        schema:
+          type: string
+          example: "refreshToken=abc123; sessionId=xyz789; HttpOnly; Path=/"
+        description: Session cookies for authentication
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully logged in an user!"
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  description: JWT access token (15 minutes validity)
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  '401':
+    description: Invalid credentials
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/Error.yaml#/Error'
+        examples:
+          invalid_credentials:
+            summary: Wrong email or password
+            value:
+              status: 401
+              message: "Email or password invalid"
