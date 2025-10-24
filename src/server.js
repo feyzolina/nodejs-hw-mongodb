@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino';
+import cookieParser from 'cookie-parser';
 import contactsRouter from './routers/contacts.js';
+import authRouter from './routers/auth.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 
@@ -16,6 +18,9 @@ export const setupServer = () => {
   // JSON middleware
   app.use(express.json());
 
+  // Cookie parser middleware
+  app.use(cookieParser());
+
   // Logger middleware
   app.use((req, res, next) => {
     logger.info(`${req.method} ${req.path}`);
@@ -23,6 +28,7 @@ export const setupServer = () => {
   });
 
   // Routes
+  app.use('/auth', authRouter);
   app.use('/', contactsRouter);
 
   // 404 handler for non-existent routes
