@@ -1,68 +1,113 @@
-# Node.js MongoDB Contact API with Authentication
+# Node.js MongoDB Contact API with Authentication & Email
 
-Bu proje, MongoDB ve Express.js kullanarak geliştirilmiş, kimlik doğrulama sistemi olan bir kişi yönetim API'sidir.
+Bu proje, MongoDB ve Express.js kullanarak geliştirilmiş, kimlik doğrulama sistemi, e-posta gönderimi ve resim yükleme özelliklerine sahip bir kişi yönetim API'sidir.
 
 ## Özellikler
 
 - ✅ Express.js backend server
 - ✅ MongoDB ile veri saklama
 - ✅ Mongoose ODM
+- ✅ JWT tabanlı kimlik doğrulama sistemi
+- ✅ Kullanıcı kayıt ve giriş işlemleri
+- ✅ Session yönetimi (access token + refresh token)
+- ✅ E-posta ile şifre sıfırlama (Brevo SMTP)
+- ✅ Cloudinary entegrasyonu ile resim yükleme
+- ✅ Multipart/form-data desteği
+- ✅ Kullanıcı izolasyonu (her kullanıcı sadece kendi verilerini görür)
+- ✅ Validation ve error handling
+- ✅ Pagination, sorting ve filtering
 - ✅ CORS desteği
 - ✅ Environment variables
 - ✅ ESLint ve Prettier yapılandırması
 
 ## API Endpoints
 
-### GET /contacts
-Tüm kişileri getirir.
+### Authentication Endpoints
 
-**Response:**
+#### POST /auth/register
+Yeni kullanıcı kaydı oluşturur.
+
+**Request Body:**
 ```json
 {
-  "status": 200,
-  "message": "Successfully found contacts!",
-  "data": [
-    {
-      "_id": "contact_id",
-      "name": "John Doe",
-      "phoneNumber": "+1234567890",
-      "email": "john@example.com",
-      "isFavourite": false,
-      "contactType": "personal",
-      "createdAt": "2025-09-21T00:00:00.000Z",
-      "updatedAt": "2025-09-21T00:00:00.000Z"
-    }
-  ]
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
 }
 ```
 
-### GET /contacts/:contactId
+#### POST /auth/login
+Kullanıcı girişi yapar ve session oluşturur.
+
+**Request Body:**
+```json
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+#### POST /auth/refresh
+Access token'ı yeniler.
+
+#### POST /auth/logout
+Kullanıcının session'ını sonlandırır.
+
+#### POST /auth/send-reset-email
+Şifre sıfırlama e-postası gönderir.
+
+**Request Body:**
+```json
+{
+  "email": "john@example.com"
+}
+```
+
+#### POST /auth/reset-pwd
+Şifre sıfırlama işlemini tamamlar.
+
+**Request Body:**
+```json
+{
+  "token": "jwt_reset_token",
+  "password": "newpassword123"
+}
+```
+
+### Contact Endpoints (Kimlik doğrulama gerekli)
+
+#### GET /contacts
+Kullanıcının tüm kişilerini getirir. Pagination, sorting ve filtering desteği.
+
+**Query Parameters:**
+- `page` - Sayfa numarası (varsayılan: 1)
+- `perPage` - Sayfa başına öğe sayısı (varsayılan: 10)
+- `sortBy` - Sıralama alanı (varsayılan: _id)
+- `sortOrder` - Sıralama yönü (asc/desc, varsayılan: asc)
+- `type` - Kişi türü filtresi (work/home/personal)
+- `isFavourite` - Favori filtresi (true/false)
+
+#### GET /contacts/:contactId
 Belirli bir kişiyi ID ile getirir.
 
-**Response (Success):**
-```json
-{
-  "status": 200,
-  "message": "Successfully found contact with id {contactId}!",
-  "data": {
-    "_id": "contact_id",
-    "name": "John Doe",
-    "phoneNumber": "+1234567890",
-    "email": "john@example.com",
-    "isFavourite": false,
-    "contactType": "personal",
-    "createdAt": "2025-09-21T00:00:00.000Z",
-    "updatedAt": "2025-09-21T00:00:00.000Z"
-  }
-}
-```
+#### POST /contacts
+Yeni kişi oluşturur. Resim yükleme desteği (multipart/form-data).
 
-**Response (Not Found):**
-```json
-{
-  "message": "Contact not found"
-}
-```
+**Content-Type:** `multipart/form-data`
+
+**Form Fields:**
+- `name` - Kişi adı (zorunlu)
+- `phoneNumber` - Telefon numarası (zorunlu)
+- `email` - E-posta adresi (opsiyonel)
+- `contactType` - Kişi türü (work/home/personal, zorunlu)
+- `isFavourite` - Favori durumu (boolean, opsiyonel)
+- `photo` - Resim dosyası (opsiyonel)
+
+#### PATCH /contacts/:contactId
+Mevcut kişiyi günceller. Resim yükleme desteği (multipart/form-data).
+
+#### DELETE /contacts/:contactId
+Kişiyi siler.
 
 ## Installation
 
@@ -85,6 +130,24 @@ MONGODB_USER=your_username
 MONGODB_PASSWORD=your_password
 MONGODB_URL=your_mongodb_url
 MONGODB_DB=your_database_name
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret
+
+# SMTP Configuration (Brevo)
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_USER=your_brevo_email
+SMTP_PASSWORD=your_brevo_smtp_key
+SMTP_FROM=your_verified_sender_email
+
+# Cloudinary Configuration
+CLOUD_NAME=your_cloudinary_cloud_name
+API_KEY=your_cloudinary_api_key
+API_SECRET=your_cloudinary_api_secret
+
+# Application URL (for email links)
+APP_DOMAIN=http://localhost:3000
 ```
 
 4. Sunucuyu başlatın:
@@ -107,12 +170,28 @@ Render.com'da aşağıdaki environment variables'ları ayarladığınızdan emin
 - `MONGODB_PASSWORD`
 - `MONGODB_URL`
 - `MONGODB_DB`
+- `JWT_SECRET`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASSWORD`
+- `SMTP_FROM`
+- `CLOUD_NAME`
+- `API_KEY`
+- `API_SECRET`
+- `APP_DOMAIN` - Deployed app URL'iniz
 
 ## Technology Stack
 
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB Atlas
 - **ODM:** Mongoose
+- **Authentication:** JWT (JSON Web Tokens)
+- **Password Hashing:** bcrypt
+- **Email Service:** Nodemailer + Brevo SMTP
+- **File Upload:** Multer
+- **Cloud Storage:** Cloudinary
+- **Validation:** Joi
 - **Environment:** dotenv
 - **Logging:** Pino
 - **Development:** Nodemon
@@ -125,20 +204,52 @@ Render.com'da aşağıdaki environment variables'ları ayarladığınızdan emin
 nodejs-hw-mongodb/
 ├── src/
 │   ├── controllers/
-│   │   └── contacts.js
+│   │   ├── contacts.js
+│   │   └── auth.js
 │   ├── db/
 │   │   ├── models/
-│   │   │   └── Contact.js
+│   │   │   ├── Contact.js
+│   │   │   ├── User.js
+│   │   │   └── Session.js
 │   │   └── initMongoConnection.js
 │   ├── services/
-│   │   └── contacts.js
+│   │   ├── contacts.js
+│   │   ├── auth.js
+│   │   └── email.js
+│   ├── routers/
+│   │   ├── contacts.js
+│   │   └── auth.js
+│   ├── middlewares/
+│   │   ├── authenticate.js
+│   │   ├── validateBody.js
+│   │   ├── isValidId.js
+│   │   ├── multer.js
+│   │   └── errorHandler.js
+│   ├── validation/
+│   │   ├── contacts.js
+│   │   └── auth.js
+│   ├── utils/
+│   │   ├── env.js
+│   │   ├── ctrlWrapper.js
+│   │   └── saveFileToCloudinary.js
+│   ├── constants/
+│   │   └── index.js
 │   ├── index.js
 │   └── server.js
+├── temp/ (git ignored)
 ├── .env.example
 ├── .gitignore
-├── .eslintrc.js
-├── .prettierrc
+├── .gitattributes
+├── render.yaml
 ├── contacts.json
 ├── package.json
 └── README.md
-``` project
+```
+
+## Homework Branches
+
+- `hw2-mongodb` - MongoDB bağlantısı ve temel yapı
+- `hw3-crud` - CRUD işlemleri ve error handling
+- `hw4-validation` - Validation, pagination, sorting, filtering
+- `hw5-auth` - JWT authentication ve user management
+- `hw6-email-and-images` - Email password reset ve image upload
