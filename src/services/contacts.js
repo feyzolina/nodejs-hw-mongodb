@@ -1,4 +1,5 @@
 import { ContactsCollection } from '../db/models/Contact.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getAllContacts = async ({
   page = 1,
@@ -54,14 +55,32 @@ export const getContactById = async (contactId, userId) => {
 };
 
 export const createContact = async (payload) => {
-  const contact = await ContactsCollection.create(payload);
+  let photo;
+  if (payload.photo) {
+    photo = await saveFileToCloudinary(payload.photo, 'photos');
+  }
+
+  const contact = await ContactsCollection.create({
+    ...payload,
+    photo,
+  });
   return contact;
 };
 
 export const updateContact = async (contactId, payload, userId, options = {}) => {
+  let photo;
+  if (payload.photo) {
+    photo = await saveFileToCloudinary(payload.photo, 'photos');
+  }
+
+  const updatedPayload = { ...payload };
+  if (photo) {
+    updatedPayload.photo = photo;
+  }
+
   const rawResult = await ContactsCollection.findOneAndUpdate(
     { _id: contactId, userId },
-    payload,
+    updatedPayload,
     {
       new: true,
       includeResultMetadata: true,

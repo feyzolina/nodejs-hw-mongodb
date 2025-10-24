@@ -4,7 +4,9 @@ import { randomBytes } from 'crypto';
 
 import { UsersCollection } from '../db/models/User.js';
 import { SessionsCollection } from '../db/models/Session.js';
+import { sendEmail } from './email.js';
 import createHttpError from 'http-errors';
+import { env } from '../utils/env.js';
 
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
@@ -80,4 +82,66 @@ export const logoutUser = async (sessionId, refreshToken) => {
     _id: sessionId,
     refreshToken,
   });
+};
+
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    env('JWT_SECRET'),
+    {
+      expiresIn: '5m', // 5 minutes
+    },
+  );
+
+  const resetLink = `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`;
+
+  await sendEmail({
+    to: email,
+    subject: 'Reset your password',
+    html: `
+      <h1>Reset your password</h1>
+      <p>Click the link below to reset your password:</p>
+      <a href="${resetLink}">Reset Password</a>
+      <p>This link expires in 5 minutes.</p>
+      <p>If you did not request this, please ignore this email.</p>
+    `,
+  });
+};
+
+export const resetPassword = async (payload) => {
+  let entries;
+
+  try {
+    entries = jwt.verify(payload.token, env('JWT_SECRET'));
+  } catch (err) {
+    if (err instanceof Error) throw createHttpError(401, 'Token is expired or invalid.');
+    throw err;
+  }
+
+  const user = await UsersCollection.findOne({
+    email: entries.email,
+    _id: entries.sub,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
+
+  await UsersCollection.updateOne(
+    { _id: user._id },
+    { password: encryptedPassword },
+  );
+
+  // Delete all sessions for this user to force re-login
+  await SessionsCollection.deleteMany({ userId: user._id });
 };
