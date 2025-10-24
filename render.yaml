@@ -9,5 +9,5 @@ services:
         value: production
     region: oregon # Render region
     plan: free # Render plan type
-    branch: hw5-auth # Git branch to deploy
+    branch: hw6-email-and-images # Git branch to deploy
     autoDeploy: true # Auto deploy on git push
