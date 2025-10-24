@@ -1,0 +1,74 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Contact Management API with Authentication & Email
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: >
+    A comprehensive Contact Management API built with Node.js, Express.js, and MongoDB. 
+    Features include JWT-based authentication, email password reset functionality, 
+    image upload with Cloudinary integration, and complete CRUD operations for contacts.
+    
+    ## Features
+    - JWT Authentication & Session Management
+    - Email Password Reset (Brevo SMTP)
+    - Image Upload with Cloudinary
+    - User Isolation (users only see their own contacts)
+    - Pagination, Sorting & Filtering
+    - Input Validation with Joi
+    - Error Handling & Logging
+    
+    ## Authentication
+    This API uses Bearer Token authentication. Include the access token in the Authorization header:
+    `Authorization: Bearer <access_token>`
+    
+tags:
+  - name: Authentication
+    description: User registration, login, logout, and password reset operations
+  - name: Contacts
+    description: CRUD operations for managing contacts with image upload support
+    
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://nodejs-hw-mongodb-hw7-swagger.onrender.com
+    description: Production server
+    
+paths:
+  # Authentication endpoints
+  /auth/register:
+    post:
+      $ref: '../swagger/paths/auth/register.yaml'
+  /auth/login:
+    post:
+      $ref: '../swagger/paths/auth/login.yaml'
+  
+  # Contact endpoints
+  /contacts:
+    get:
+      $ref: '../swagger/paths/contacts/get.yaml'
+    post:
+      $ref: '../swagger/paths/contacts/post.yaml'
+      
+  /contacts/{contactId}:
+    get:
+      $ref: '../swagger/paths/contacts/{id}/get.yaml'
+    patch:
+      $ref: '../swagger/paths/contacts/{id}/patch.yaml'
+    delete:
+      $ref: '../swagger/paths/contacts/{id}/delete.yaml'
+  
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token obtained from login endpoint
+      
+  schemas:
+    # Common schemas will be defined here
+    
+  responses:
+    # Common responses will be defined here

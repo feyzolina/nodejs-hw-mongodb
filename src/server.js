@@ -4,6 +4,7 @@ import pino from 'pino';
 import cookieParser from 'cookie-parser';
 import contactsRouter from './routers/contacts.js';
 import authRouter from './routers/auth.js';
+import swaggerRouter from './routers/swagger.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 
@@ -30,6 +31,7 @@ export const setupServer = () => {
   // Routes
   app.use('/auth', authRouter);
   app.use('/', contactsRouter);
+  app.use('/api-docs', swaggerRouter);
 
   // 404 handler for non-existent routes
   app.use(notFoundHandler);

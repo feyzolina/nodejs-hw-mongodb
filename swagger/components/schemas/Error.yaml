@@ -1,0 +1,14 @@
+Error:
+  type: object
+  required:
+    - status
+    - message
+  properties:
+    status:
+      type: integer
+      description: HTTP status code
+      example: 404
+    message:
+      type: string
+      description: Error message
+      example: "Contact not found"

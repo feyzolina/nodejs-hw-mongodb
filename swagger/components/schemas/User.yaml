@@ -1,0 +1,31 @@
+User:
+  type: object
+  required:
+    - name
+    - email
+  properties:
+    _id:
+      type: string
+      description: Unique identifier for the user
+      example: "507f1f77bcf86cd799439012"
+    name:
+      type: string
+      minLength: 3
+      maxLength: 20
+      description: User's full name
+      example: "Jane Smith"
+    email:
+      type: string
+      format: email
+      description: User's email address (must be unique)
+      example: "jane.smith@example.com"
+    createdAt:
+      type: string
+      format: date-time
+      description: User registration timestamp
+      example: "2023-10-20T08:15:00.000Z"
+    updatedAt:
+      type: string
+      format: date-time
+      description: User last update timestamp
+      example: "2023-10-24T12:20:00.000Z"
