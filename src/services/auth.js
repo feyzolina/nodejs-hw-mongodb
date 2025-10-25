@@ -90,12 +90,17 @@ export const requestResetToken = async (email) => {
         throw createHttpError(404, 'User not found');
     }
 
+    const jwtSecret = env('JWT_SECRET', '');
+    if (!jwtSecret) {
+        throw createHttpError(500, 'Email password reset feature is not configured. Please contact administrator.');
+    }
+
     const resetToken = jwt.sign(
         {
             sub: user._id,
             email,
         },
-        env('JWT_SECRET'),
+        jwtSecret,
         {
             expiresIn: '5m', // 5 minutes
         },
@@ -119,8 +124,13 @@ export const requestResetToken = async (email) => {
 export const resetPassword = async (payload) => {
     let entries;
 
+    const jwtSecret = env('JWT_SECRET', '');
+    if (!jwtSecret) {
+        throw createHttpError(500, 'Password reset feature is not configured. Please contact administrator.');
+    }
+
     try {
-        entries = jwt.verify(payload.token, env('JWT_SECRET'));
+        entries = jwt.verify(payload.token, jwtSecret);
     } catch (err) {
         if (err instanceof Error) throw createHttpError(401, 'Token is expired or invalid.');
         throw err;
