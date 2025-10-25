@@ -164,20 +164,44 @@ npm start
 Bu proje Render.com'a deploy edilmiştir.
 
 ### Environment Variables (Render.com)
-Render.com'da aşağıdaki environment variables'ları ayarladığınızdan emin olun:
-- `PORT` - Render otomatik olarak ayarlar
-- `MONGODB_USER`
-- `MONGODB_PASSWORD`
-- `MONGODB_URL`
-- `MONGODB_DB`
-- `JWT_SECRET`
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USER`
-- `SMTP_PASSWORD`
-- `SMTP_FROM`
-- `CLOUD_NAME`
-- `API_KEY`
+
+**🔧 Render.com Dashboard → Service → Environment sekmesinde aşağıdaki değişkenleri ayarlayın:**
+
+#### 🔒 **Zorunlu Variables (Minimum çalışma için):**
+```bash
+MONGODB_USER=your_mongodb_username
+MONGODB_PASSWORD=your_mongodb_password  
+MONGODB_URL=your_mongodb_cluster_url
+MONGODB_DB=your_database_name
+JWT_SECRET=your_random_jwt_secret_key_here
+```
+
+#### 📧 **Email Özelliği için (hw6 password reset):**
+```bash
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_USER=your_brevo_login_email
+SMTP_PASSWORD=your_brevo_smtp_api_key
+SMTP_FROM=your_verified_sender_email
+```
+
+#### 🖼️ **Image Upload için (hw6 Cloudinary):**
+```bash
+CLOUD_NAME=your_cloudinary_cloud_name
+API_KEY=your_cloudinary_api_key
+API_SECRET=your_cloudinary_api_secret
+```
+
+#### 🌐 **Application Domain:**
+```bash
+APP_DOMAIN=https://your-app-name.onrender.com
+```
+
+#### ⚠️ **Önemli Notlar:**
+- **JWT_SECRET** eksik olursa authentication çalışmaz
+- **SMTP credentials** eksik olursa email reset çalışmaz (500 error)
+- **Cloudinary credentials** eksik olursa image upload çalışmaz
+- Tüm değişkenler eklendikten sonra service otomatik restart olur
 - `API_SECRET`
 - `APP_DOMAIN` - Deployed app URL'iniz
 
