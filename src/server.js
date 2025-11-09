@@ -31,6 +31,19 @@ export const setupServer = () => {
   // Static files for reset password page
   app.use(express.static('public'));
   
+  // Welcome route
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Contact Manager API - HW6 Email Reset System',
+      status: 'running',
+      endpoints: {
+        auth: '/auth/*',
+        contacts: '/contacts',
+        resetPassword: '/reset-password'
+      }
+    });
+  });
+
   // Reset password page route
   app.get('/reset-password', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'reset-password.html'));
@@ -38,7 +51,7 @@ export const setupServer = () => {
 
   // Routes
   app.use('/auth', authRouter);
-  app.use('/', contactsRouter);
+  app.use('/contacts', contactsRouter);
 
   // 404 handler for non-existent routes
   app.use(notFoundHandler);
