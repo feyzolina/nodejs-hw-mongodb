@@ -1,7 +1,7 @@
 {
   "name": "nodejs-hw-mongodb",
   "version": "1.0.0",
-  "description": "",
+  "description": "Contact Manager with Email Reset - HW6",
   "main": "src/index.js",
   "type": "module",
   "engines": {
